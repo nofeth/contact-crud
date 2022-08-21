@@ -1,6 +1,6 @@
 import yargs from "yargs"
 import { hideBin } from 'yargs/helpers'
-import { saveContact } from "./contacts.js"
+import { deleteContact, detailContact, listContact, saveContact } from "./contacts.js"
 import fs from 'fs'
 yargs(hideBin(process.argv)).command(
     'add',
@@ -27,16 +27,40 @@ yargs(hideBin(process.argv)).command(
     function({nama,email,noHp}){
         saveContact(nama,email,noHp)
     } 
-).parse()
+).demandCommand().parse()
 
+yargs(hideBin(process.argv)).command(
+    'list',
+    'Menampilkan Data',
+    function() {
+        return listContact()
+    }
+).demandCommand().parse()
 
+yargs(hideBin(process.argv)).command(
+    'detail',
+    'Masukkan Detail Dari Nama',
+    function(yargs){
+        return yargs.option('nama',{
+            describe : 'Nama yang ingin ditampilkan',
+            type: 'string'
+        })
+    },
+    function(argv){
+        detailContact(argv.nama)
+    }
+).demandCommand().parse()
 
-// import { saveContact,question } from "./contacts.js"
-// const main = async () => {
-//     const nama = await question("Nama Kamu : ")
-//     const email = await question("Email Kamu : ")
-//     const noHp = await question("No Hp Kamu : ")
-//     saveContact(nama,email,noHp)
-// }
-
-// main()
+yargs(hideBin(process.argv)).command(
+    'delete',
+    'Masukkan Nama yang ingin dihapus',
+    function(yargs){
+        return yargs.option('nama',{
+            describe : 'Nama yang ingin ditampilkan',
+            type: 'string'
+        })
+    },
+    function(argv){
+        deleteContact(argv.nama)
+    }
+).demandCommand().parse()
